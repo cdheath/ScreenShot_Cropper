@@ -8,4 +8,12 @@
     tools:context="com.example.cdh.screenshottovoiceservice.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="TestRestAPI"
+        android:text="Test Rest API"
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="159dp" />
 </android.support.constraint.ConstraintLayout>

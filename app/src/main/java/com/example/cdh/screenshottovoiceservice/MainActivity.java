@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     {
         Log.d("Test Get", "Sending Get Request");
         RequestParams rp = new RequestParams();
-        rp.add("username", "cdheath"); rp.add("password", "F573g4h6");
+        rp.add("username", "cdheath"); rp.add("password", "");
         speaker.speak(restClient.getTestFromRestApi(rp),TextToSpeech.QUEUE_FLUSH, null,null);
     }
 

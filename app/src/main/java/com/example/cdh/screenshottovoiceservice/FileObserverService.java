@@ -143,9 +143,8 @@ public class FileObserverService extends Service {
                 if(!new File(Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + imgFile.getName() + "_trim.png").exists()) {
                     Log.d("Create New Image File", "Starting Image File Parse and Saving");
                     out = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + imgFile.getName() + "_trim.png");
-                    newBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-
-                    // PNG is a lossless format, the compression factor (100) is ignored
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(newBitmap, newBitmap.getWidth()/2, newBitmap.getHeight()/2, true);
+                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -5,6 +5,7 @@ import com.loopj.android.http.RequestParams;
 import cz.msebera.android.httpclient.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 /**
  * Created by Corey on 4/20/2017.
@@ -14,12 +15,16 @@ import org.json.JSONObject;
 public class RestClient {
         public static final String POST_IMAGE_URL = "describephoto/";
         public static final String POST_PREFERENCES_URL = "loadpreferences/";
+        public static final String GET_TEST_URL ="time/";
 
         public RestClient()
         {}
 
         public String postImageToRestApi(RequestParams rp)
         {
+                Log.d("RESTAPI", "Sending Image");
+                Log.d("RP", rp.toString());
+
                 final String[] finalResponse = {"post call was unsuccessful."};
                 HttpUtils.post(POST_IMAGE_URL, rp, new JsonHttpResponseHandler(){
                         @Override
@@ -28,7 +33,17 @@ public class RestClient {
                                 Log.d("JSONResponse", "---------------- this is response : " + response);
                                 try {
                                         JSONObject serverResp = new JSONObject(response.toString());
-                                        finalResponse[0] = serverResp.toString();
+                                        int isOutdoor = serverResp.getInt("Outdoor");
+                                        Log.d("Is Outdoor", String.valueOf(isOutdoor));
+                                        if (isOutdoor == 1)
+                                        {
+                                                finalResponse[0] = "The photograph was taken outside.";
+                                        }
+                                        else if (isOutdoor == 0)
+                                        {
+                                                finalResponse[0] = "The photograph was taken inside.";
+                                        }
+
                                 } catch (JSONException e) {
                                         // TODO Auto-generated catch block
                                         e.printStackTrace();
@@ -48,20 +63,6 @@ public class RestClient {
                                 }
                         }
 
-                /*        @Override
-                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                // If the response is JSONObject instead of expected JSONArray
-                                Log.d("Response", "---------------- this is response : " + responseString);
-                                try {
-                                        // JSONObject serverResp = new JSONObject(response.toString());
-                                        finalResponse[0] = responseString;
-                                } catch (Exception e) {
-                                        // TODO Auto-generated catch block
-
-
-                                }
-                        } */
-
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                 super.onFailure(statusCode, headers, responseString, throwable);
@@ -78,7 +79,7 @@ public class RestClient {
         public String getTestFromRestApi(RequestParams rp)
         {
                 final String[] finalResponse = {"post call was unsuccessful."};
-                HttpUtils.get(POST_IMAGE_URL, rp, new JsonHttpResponseHandler(){
+                HttpUtils.get(GET_TEST_URL, rp, new JsonHttpResponseHandler(){
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response){
@@ -86,7 +87,8 @@ public class RestClient {
                                 Log.d("Response", "---------------- this is response : " + response);
                                 try {
                                         JSONObject serverResp = new JSONObject(response.toString());
-                                        finalResponse[0] = serverResp.toString();
+                                        //finalResponse[0] = serverResp.toString();
+                                        finalResponse[0] = "Post call was successful.";
                                 } catch (JSONException e) {
                                         // TODO Auto-generated catch block
                                         e.printStackTrace();

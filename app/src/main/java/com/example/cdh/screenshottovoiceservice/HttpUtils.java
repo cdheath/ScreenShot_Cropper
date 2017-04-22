@@ -5,6 +5,7 @@ import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 /**
  * Created by Corey on 4/20/2017.
@@ -14,7 +15,7 @@ import com.loopj.android.http.RequestParams;
 public class HttpUtils {
     private static final String BASE_URL = "https://photodescriber-cdheath.c9users.io/";
 
-    private static AsyncHttpClient client = new AsyncHttpClient();
+    private static AsyncHttpClient client = new SyncHttpClient();
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Log.d("Call Path: ", getAbsoluteUrl(url));

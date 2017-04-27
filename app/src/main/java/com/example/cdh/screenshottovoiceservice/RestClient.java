@@ -3,6 +3,8 @@ import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import cz.msebera.android.httpclient.Header;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -15,7 +17,7 @@ import org.json.JSONStringer;
 public class RestClient {
         public static final String POST_IMAGE_URL = "describephoto/";
         public static final String POST_PREFERENCES_URL = "loadpreferences/";
-        public static final String GET_TEST_URL ="time/";
+        public static final String GET_TEST_URL ="testjson/";
 
         public RestClient()
         {}
@@ -34,6 +36,7 @@ public class RestClient {
                                 try {
                                         JSONObject serverResp = new JSONObject(response.toString());
                                         int isOutdoor = serverResp.getInt("Outdoor");
+
                                         Log.d("Is Outdoor", String.valueOf(isOutdoor));
                                         if (isOutdoor == 1)
                                         {
@@ -78,7 +81,7 @@ public class RestClient {
 
         public String getTestFromRestApi(RequestParams rp)
         {
-                final String[] finalResponse = {"post call was unsuccessful."};
+                final String[] finalResponse = {""};
                 HttpUtils.get(GET_TEST_URL, rp, new JsonHttpResponseHandler(){
 
                         @Override
@@ -87,8 +90,10 @@ public class RestClient {
                                 Log.d("Response", "---------------- this is response : " + response);
                                 try {
                                         JSONObject serverResp = new JSONObject(response.toString());
-                                        //finalResponse[0] = serverResp.toString();
-                                        finalResponse[0] = "Post call was successful.";
+                                        JSONArray peopleResp = serverResp.getJSONArray("People");
+                                        finalResponse[0] = parseServiceResponse(serverResp);
+                                        Log.d("Array Response", "---------------- Length : " + peopleResp.length());
+                                        Log.d("Response", "---------------- String : " +parseServiceResponse(serverResp));
                                 } catch (JSONException e) {
                                         // TODO Auto-generated catch block
                                         e.printStackTrace();
@@ -96,9 +101,101 @@ public class RestClient {
                         }
 
                 });
-
+                Log.d("Response", "---------------- triggered");
                 return finalResponse[0];
         }
 
+        private String parseServiceResponse(JSONObject serverResp) throws JSONException
+        {
+
+                String responseString = "";
+                int isOutdoor = serverResp.getInt("Outdoor");
+                int recommendation = serverResp.getInt("Recommendation");
+                JSONArray peopleResp = serverResp.getJSONArray("People");
+                if(peopleResp.length() == 0)
+                {
+                        responseString += "There are no people in this photo.";
+                }
+                else if(peopleResp.length() == 1)
+                {
+                        responseString += "There is one person in this photo.";
+                }
+                else
+                {
+                        responseString += "There are " +Integer.toString(peopleResp.length()) +" people in this photo.";
+                }
+
+                if(isOutdoor == 1)
+                {
+                        responseString += " The photo was taken outdoors.";
+                }
+                else
+                {
+                        responseString += " The photo was taken indoors.";
+                }
+
+                for(int index = 0; index < peopleResp.length(); index++)
+                {
+                        JSONObject person = peopleResp.getJSONObject(index).getJSONObject("Person");
+                        String temp = " Person " +Integer.toString(index + 1) + " is ";
+                        if(person.getInt("Gender") == 1)
+                        {
+                                temp += " male ";
+                        }
+                        else
+                        {
+                                temp += " female ";
+                        }
+
+                        if(person.getInt("LongFace") == 1)
+                        {
+                                temp += " with a Long Face ";
+                        }
+                        else
+                        {
+                                temp += " with a Round Face,";
+                        }
+
+                        if(person.getInt("LongHair") == 1)
+                        {
+                                temp += "and long hair. ";
+                        }
+                        else
+                        {
+                                temp += "and short hair. ";
+                        }
+
+                        if(person.getInt("Smiling") == 1)
+                        {
+                                if(person.getInt("Gender") == 1)
+                                {
+                                        temp += "  He is smiling";
+                                }
+
+                                else
+                                {
+                                        temp += "  She is smiling";
+                                }
+                        }
+                        else
+                        {
+                                if(person.getInt("Gender") == 1)
+                                {
+                                        temp += "  He is not smiling";
+                                }
+
+                                else
+                                {
+                                        temp += "  She is not smiling";
+                                }
+                        }
+
+                        responseString += temp;
+                }
+
+
+                responseString += "  Based on this photo you have a " +Integer.toString(recommendation) +" percent change of liking this person.";
+                return responseString +".";
+        }
 
 }

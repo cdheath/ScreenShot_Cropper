@@ -35,7 +35,8 @@ public class RestClient {
                                 Log.d("JSONResponse", "---------------- this is response : " + response);
                                 try {
                                         JSONObject serverResp = new JSONObject(response.toString());
-                                        int isOutdoor = serverResp.getInt("Outdoor");
+                                        finalResponse[0] = parseServiceResponseIndividual(serverResp);
+/*                                        int isOutdoor = serverResp.getInt("Outdoor");
 
                                         Log.d("Is Outdoor", String.valueOf(isOutdoor));
                                         if (isOutdoor == 1)
@@ -46,7 +47,7 @@ public class RestClient {
                                         {
                                                 finalResponse[0] = "The photograph was taken inside.";
                                         }
-
+*/
                                 } catch (JSONException e) {
                                         // TODO Auto-generated catch block
                                         e.printStackTrace();
@@ -196,6 +197,68 @@ public class RestClient {
 
                 responseString += "  Based on this photo you have a " +Integer.toString(recommendation) +" percent change of liking this person.";
                 return responseString +".";
+        }
+
+        private String parseServiceResponseIndividual(JSONObject serverResp) throws JSONException {
+                String responseString = "";
+                int isOutdoor = serverResp.getInt("Outdoor");
+           //     int isMale = serverResp.getInt("Gender");
+                int isFemale = 1;
+                int hasLongFace = serverResp.getInt("LongFace");
+                int hasLongHair = serverResp.getInt("LongHair");
+                int isSmiling = serverResp.getInt("Smile");
+         /*       try {
+                        if(serverResp.getString("LongHair").length() > 0) {
+                                hasLongHair = Integer.parseInt(serverResp.getString("LongHair"));
+                        }
+                }
+                catch (JSONException e)
+                {
+                        e.printStackTrace();
+                        hasLongHair = serverResp.getInt("LongHair");
+                } */
+
+                if (isOutdoor == 1) {
+                        responseString += "The photo was taken outdoors.";
+                } else {
+                        responseString += "The photo was taken inside. ";
+                }
+
+                if (isFemale == 1) {
+                        responseString += "The picture is of a woman, ";
+                } else {
+                        responseString += "The picture is of a man ";
+                }
+
+                if(isSmiling == 1)
+                {
+                        responseString += " who is smiling ";
+                }
+                else if(isSmiling == 0)
+                {
+                        responseString += " who is not smiling ";
+                }
+
+                if (hasLongHair == 1) {
+                        responseString += "with long hair ";
+                } else if(hasLongHair == 0){
+                        responseString += "with short hair ";
+                }
+
+                if(hasLongFace == 1)
+                {
+                        responseString += " and has a long face.";
+                }
+                else if (hasLongFace == 0)
+                {
+                        responseString += " and has a round face.";
+                }
+                else
+                {
+                        responseString += " I can not make out the face shape.";
+                }
+
+                return responseString;
         }
 
 }

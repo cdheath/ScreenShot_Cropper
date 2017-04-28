@@ -67,9 +67,9 @@ public class FileObserverService extends Service {
                 {
                     speaker.setLanguage(Locale.US);
                     if(Build.VERSION.RELEASE.startsWith("5"))
-                        speaker.speak("Service Initializing " + path, TextToSpeech.QUEUE_FLUSH, null, null);
+                        speaker.speak("Service Initialized " + path, TextToSpeech.QUEUE_FLUSH, null, null);
                     else
-                        speaker.speak("Service Initializing", TextToSpeech.QUEUE_FLUSH, null);
+                        speaker.speak("Service Initialized", TextToSpeech.QUEUE_FLUSH, null);
 
 
                 }

@@ -14,15 +14,19 @@ import com.loopj.android.http.SyncHttpClient;
 
 public class HttpUtils {
     private static final String BASE_URL = "https://photodescriber-cdheath.c9users.io/";
+    private static final int DEFAULT_TIMEOUT = 20 * 1000;
+
 
     private static AsyncHttpClient client = new SyncHttpClient();
     private static AsyncHttpClient aClient = new AsyncHttpClient();
+
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Log.d("Call Path: ", getAbsoluteUrl(url));
         aClient.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
     public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        client.setTimeout(DEFAULT_TIMEOUT);
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
